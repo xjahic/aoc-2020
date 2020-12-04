@@ -13,7 +13,6 @@ with open("input.txt") as f:
             # check current passport
             if all(required in current_passport_fields for required in required_fields): valid_passports += 1
             current_passport_fields.clear()
-
         else:
             # add fields to current passport
             current_passport_fields += ([field[:field.index(":")] for field in line.rstrip().split(" ")])
@@ -50,9 +49,7 @@ with open("input.txt") as f:
         if line == "\n":
             # check current passport
             if is_passport_valid(current_passport_fields): valid_passports += 1
-
             current_passport_fields.clear()
-
         else:
             # add fields to current passport
             for raw_field in line.rstrip().split(" "):
