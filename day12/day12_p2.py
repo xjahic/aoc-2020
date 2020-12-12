@@ -1,16 +1,14 @@
 def manhattan_distance():
-    return abs(ship_directions["E"] - ship_directions["W"]) + abs(ship_directions["N"] - ship_directions["S"])
+    return abs(ship_directions["X"]) + abs(ship_directions["Y"])
 
 
-directions = "WNES"
-waypoint_direction = {"E": 10, "W": 0, "N": 1, "S": 0}
-ship_directions = {"E": 0, "W": 0, "N": 0, "S": 0}
+waypoint_direction = {"X": 10, "Y": 1}
+ship_directions = {"X": 0, "Y": 0}
 
 
 def move_ship_relative_to_waypoint(val: int):
-    for k, v in waypoint_direction.items():
-        if v > 0:
-            ship_directions[k] = ship_directions.get(k) + v * val
+    ship_directions["X"] = ship_directions["X"] + waypoint_direction["X"] * val
+    ship_directions["Y"] = ship_directions["Y"] + waypoint_direction["Y"] * val
 
 
 with open("input.txt") as f:
@@ -20,19 +18,24 @@ with open("input.txt") as f:
             move_ship_relative_to_waypoint(value)
         elif action == "L":
             turns = int(value / 90)
-            rotated_directions = directions[-turns:] + directions[:-turns]  # rotation
-            new_waypoint_directions = {"E": 0, "W": 0, "N": 0, "S": 0}
-            for i in range(len(directions)):
-                waypoint_direction[rotated_directions[i]] = waypoint_direction[directions[i]]
-            waypoint_direction = new_waypoint_directions
+            for i in range(turns):
+                (x, y) = waypoint_direction["X"], waypoint_direction["Y"]
+                waypoint_direction["X"] = -y
+                waypoint_direction["Y"] = x
         elif action == "R":
             turns = int(value / 90)
-            rotated_directions = directions[turns:] + directions[:turns]  # rotation
-            new_waypoint_directions = {"E": 0, "W": 0, "N": 0, "S": 0}
-            for i in range(len(directions)):
-                new_waypoint_directions[rotated_directions[i]] = waypoint_direction[directions[i]]
-            waypoint_direction = new_waypoint_directions
+            for i in range(turns):
+                (x, y) = waypoint_direction["X"], waypoint_direction["Y"]
+                waypoint_direction["X"] = y
+                waypoint_direction["Y"] = -x
         else:
-            waypoint_direction[action] = waypoint_direction.get(action) + value
+            if action == "N":
+                waypoint_direction["Y"] = waypoint_direction.get("Y") + value
+            elif action == "S":
+                waypoint_direction["Y"] = waypoint_direction.get("Y") - value
+            elif action == "E":
+                waypoint_direction["X"] = waypoint_direction.get("X") + value
+            elif action == "W":
+                waypoint_direction["X"] = waypoint_direction.get("X") - value
 
 print(manhattan_distance())
